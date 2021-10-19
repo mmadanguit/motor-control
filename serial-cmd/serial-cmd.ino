@@ -8,8 +8,8 @@ Adafruit_DCMotor *rMotor = AFMS.getMotor(1);
 Adafruit_DCMotor *lMotor = AFMS.getMotor(2);
 
 // Set initial motor speeds
-int rSpeed = 50;
-int lSpeed = 50;
+int rSpeed = 0;
+int lSpeed = 0;
 
 // Analog input pins that the distance sensors are attached to
 const int rAnalogPin = A0;  
@@ -21,15 +21,10 @@ bool str2hex(char *str, uint16_t *val);
 
 void setup() {
   // Initialize serial communications at 9600 bps:
-  Serial.begin(9600);           
-
-  // Check if the motor shield has been found
-  if (!AFMS.begin()) {        
-    Serial.println("Could not find Motor Shield. Check wiring.");
-    while (1);
-  }
-  Serial.println("Motor Shield found.");
-
+  Serial.begin(115200);  
+           
+  AFMS.begin();
+  
   // Set the speed to start, from 0 (off) to 255 (max speed)
   rMotor->setSpeed(rSpeed);
   lMotor->setSpeed(lSpeed);  
@@ -60,10 +55,10 @@ void parse_command() {
   uint16_t val;
 
   if (command.equals("RSENSOR?")) {
-    Serial.print(analogRead(rAnalogPin));
+    Serial.print(analogRead(rAnalogPin), HEX);
     Serial.print("\r\n");
   } else if (command.equals("LSENSOR?")) {
-    Serial.print(analogRead(lAnalogPin));
+    Serial.print(analogRead(lAnalogPin), HEX);
     Serial.print("\r\n");
   } else if (command.startsWith("RMOTOR!")) {
     if (str2hex(command.substring(7), &val)) {

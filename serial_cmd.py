@@ -25,7 +25,7 @@ class Serial_cmd:
                     break
         else:
             try:
-                self.dev = serial.Serial(port, 9600)
+                self.dev = serial.Serial(port, 115200)
                 self.connected = True
             except:
                 self.dev = None

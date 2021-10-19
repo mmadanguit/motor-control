@@ -1,10 +1,10 @@
 import tkinter as tk
-import Serial_cmd
+import serial_cmd
 
 class Serial_cmd_gui:
 
     def __init__(self):
-        self.dev = Serial_cmd.Serial_cmd()
+        self.dev = serial_cmd.Serial_cmd()
         if self.dev.dev is not None:
             self.update_job = None
             self.root = tk.Tk()
