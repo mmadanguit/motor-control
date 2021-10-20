@@ -23,6 +23,7 @@ int last_error = 0;
 String command = "";
 bool str2hex(char *str, uint16_t *val);
 
+
 void setup() {
   // Initialize serial communications at 9600 bps:
   Serial.begin(115200);  
@@ -35,6 +36,7 @@ void setup() {
   rMotor->setSpeed(avgSpeed);
   lMotor->setSpeed(avgSpeed);
 }
+
 
 void loop() {
   if (Serial.available()) {
@@ -58,7 +60,16 @@ void loop() {
 
   float C = compute_PID(error);
   drive(avgSpeed+C, avgSpeed-C);
+
+  Serial.print(avgSpeed+C); Serial.print(',');
+  Serial.print(avgSpeed-C); Serial.print(',');
+  Serial.print(analogRead(A0)); Serial.print(',');
+  Serial.print(analogRead(A1)); Serial.print(',');
+  Serial.print(analogRead(A2)); Serial.print(',');
+  Serial.print(analogRead(A3)); Serial.print(',');
+  Serial.println(error);
 }
+
 
 void drive(float left, float right) {
   if (left >= 0) {
@@ -80,6 +91,7 @@ void drive(float left, float right) {
   }
 }
 
+
 float compute_PID(int error) {
   P = error;
   I += error;
@@ -90,54 +102,16 @@ float compute_PID(int error) {
   return kP*P + kI*I + kD*D;
 }
 
+
 void parse_command() {
   uint16_t val;
   if (command.startsWith("SPEED!")) {
-    Serial.print("Command: ");
-    Serial.println(command);
-    if (str2hex(command.substring(6), &val)) {
-      Serial.print("Sent: ");
-      Serial.println(val);
-      avgSpeed = val;
-    }
+    avgSpeed = command.substring(6).toInt();
   } else if (command.startsWith("P!")) {
-    if (str2hex(command.substring(2), &val)) {
-      kP = val;
-    }
+    kP = command.substring(2).toFloat();
   } else if (command.startsWith("I!")) {
-    if (str2hex(command.substring(2), &val)) {
-      kI = val;
-    }
+    kI = command.substring(2).toFloat();
   } else if (command.startsWith("D!")) {
-    if (str2hex(command.substring(2), &val)) {
-      kD = val;
-    }
+    kI = command.substring(2).toFloat();
   }
-}
-
-bool str2hex(String str, uint16_t *val) {
-  uint8_t pos = 0;
-
-  if (str.length() == 0)
-    return false;
-
-  while ((str.charAt(pos) == ' ') || (str.charAt(pos) == '\t')) {
-    pos++;
-  }
-
-  *val = 0;
-  while (pos < str.length()) {
-    if ((str.charAt(pos) >= '0') && (str.charAt(pos) <= '9')) {
-      *val = (*val << 4) + (str.charAt(pos) - '0');
-    } else if ((str.charAt(pos) >= 'a') && (str.charAt(pos) <= 'f')) {
-      *val = (*val << 4) + 10 + (str.charAt(pos) - 'a');
-    } else if ((str.charAt(pos) >= 'A') && (str.charAt(pos) <= 'F')) {
-      *val = (*val << 4) + 10 + (str.charAt(pos) - 'A');
-    } else {
-      return false;
-    }
-    pos++;
-  }
-
-  return true;
 }
