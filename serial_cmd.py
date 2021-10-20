@@ -39,20 +39,18 @@ class Serial_cmd:
         if self.connected:
             return self.dev.readline().decode()
 
-    def get_rSensor(self):
+    def set_speed(self, val):
         if self.connected:
-            self.write('RSENSOR?')
-            return int(self.read(), 16)
+            self.write('SPEED!{:X}'.format(int(val)))
 
-    def get_lSensor(self):
+    def set_p(self, val):
         if self.connected:
-            self.write('LSENSOR?')
-            return int(self.read(), 16)
+            self.write('P!{:X}'.format(int(val)))
 
-    def set_rMotor(self, val):
+    def set_i(self, val):
         if self.connected:
-            self.write('RMOTOR!{:X}'.format(int(val)))
+            self.write('I!{:X}'.format(int(val)))
 
-    def set_lMotor(self, val):
+    def set_d(self, val):
         if self.connected:
-            self.write('LMOTOR!{:X}'.format(int(val)))
+            self.write('D!{:X}'.format(int(val)))
