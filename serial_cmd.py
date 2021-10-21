@@ -1,9 +1,10 @@
+"""Class that initializes serial communication to Arduino and has methods to read and write to Serial command"""
+
 import serial
 import serial.tools.list_ports as list_ports
 import string, array
 
 class Serial_cmd:
-
     Arduino_IDs = ((0x2341, 0x0043), (0x2341, 0x0001),
                    (0x2A03, 0x0043), (0x2341, 0x0243),
                    (0x0403, 0x6001), (0x1A86, 0x7523))
